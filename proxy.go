@@ -3,8 +3,9 @@ package account
 import "fmt"
 
 type Proxy struct {
-	IP   string `sql:"ip"`
-	Port int    `sql:"port"`
+	IP    string `json:"ip"`
+	Port  int    `json:"port"`
+	InUse int    `json:"in_use"`
 }
 
 func (p Proxy) String() string {
