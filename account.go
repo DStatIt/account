@@ -1,10 +1,22 @@
 package account
 
+import (
+	"fmt"
+	"math/rand"
+	"time"
+
+	"github.com/satori/go.uuid"
+)
+
 type AccountType int
 
 const (
-	Instagram AccountType = iota
+	Instagram   AccountType = iota
+	devID       string      = "android-"
+	devIDLength int         = 16 //DEV ID random string length
 )
+
+var src = rand.NewSource(time.Now().UnixNano())
 
 type Account struct {
 	Proxy Proxy
@@ -21,7 +33,23 @@ type Account struct {
 
 	PhoneNumber string `json:"phone_number"`
 
-	Device Device `json:"device"`
+	GUID    string `json:"guid"`
+	DevID   string `json:"device_id"`
+	PhoneID string `json:"phone_id"`
+}
 
-	Cookies []Cookie `json:"cookies"`
+func GenerateDeviceId() string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+	result := make([]byte, devIDLength)
+	for i := 0; i < devIDLength; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	return fmt.Sprintf("%s%s", devID, result)
+}
+
+func (a *Account) CreateDevice() {
+	a.GUID = uuid.NewV4().String()
+	a.PhoneID = uuid.NewV4().String()
+	a.DevID = GenerateDeviceId()
 }
