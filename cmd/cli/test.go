@@ -15,18 +15,20 @@ const (
 )
 
 func main() {
-
 	session, err := mgo.Dial(server)
 	if err != nil {
 		log.Println(err)
 	}
-	db := session.DB(socialDB)
-	accountRepo := account.MGOAccount{db}
+
+	accountRepo := account.MGOAccount{
+		Database: session.DB(socialDB),
+	}
 
 	p := account.Proxy{
 		IP:   "192.1.1.2",
 		Port: 123,
 	}
+
 	if err := accountRepo.AddProxy(bson.ObjectIdHex("57463e10537bc07bfa9a56df"), p); err != nil {
 		log.Println(err)
 	}
